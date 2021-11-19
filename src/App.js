@@ -11,6 +11,7 @@ import Comunidades from './pages/comunidades.js'
 import Productos from './pages/productos.js'
 import Personas from './pages/personas.js'
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import newComunidad from './component/newComunidad';
 
 export class App extends Component {
   constructor(props) {
@@ -18,6 +19,9 @@ export class App extends Component {
     this.state = {
   
     }
+  }
+  componentDidMount() {
+  
   }
   /*
         <Router className="App">
@@ -33,10 +37,24 @@ export class App extends Component {
           </Route>   
         </Switch>      
       </Router>
+
+              <Route path="/productos">
+          <Productos />
+        </Route> 
   */ 
   render() {
     return (
-    <Comunidades />
+      <Router className="App">
+      <Switch>  
+ 
+        <Route path="/comunidades">
+          <Comunidades />
+        </Route>
+        <Route exact path="/">
+          <div>hola</div>
+        </Route>   
+      </Switch>      
+      </Router>
     )
   }
 }
