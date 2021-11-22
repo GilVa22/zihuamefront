@@ -50,6 +50,9 @@ export class App extends Component {
         <Route path="/comunidades">
           <Comunidades />
         </Route>
+        <Route path="/productos">
+          <Productos />
+        </Route>
         <Route exact path="/">
           <div>hola</div>
         </Route>   

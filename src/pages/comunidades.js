@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import Row from 'react-bootstrap/Row';
-import ComunidadCard from '../component/comunidadCard';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import NewComunidad from '../component/newComunidad';
+import ComunidadCard from '../component/comunidadCard';
 
 export class comunidades extends Component {
     constructor(props) {
@@ -17,24 +17,42 @@ export class comunidades extends Component {
                 this.longi = "longi",
                 this.desc = "desc",
                 this.id = 0,
-                this.fotos = ["fotos", "foto"],
+                this.fotos = "foto",
+                this.nombre = "nombre",
                 this.prod = ["prod"],
+
                 //this.nombre: "name",
             ],
             visuble: false,
-            id: 0,
+            id: -1,
+            productos: []
         }
         this.getAllComunidades = this.getAllComunidades.bind(this);
         this.setForms = this.setForms.bind(this);
     }   
     componentDidMount () {
         this.getAllComunidades();
-        console.log("Mount");
+        //console.log("Mount");
     }
-    setForms = (vis) => {
-       this.setState({
-            visuble: vis
-    });
+    setForms = (vis, gid) => {
+        let found= false;
+        for(let i = 0; i < this.state.comunidades.length; i++) {
+            if(this.state.comunidades[i].id === gid) {
+                this.setState({
+                    visuble: vis,
+                    id: i,
+                });
+                found=true;
+            }
+        }
+        if(!found) {
+            this.setState({
+                visuble: vis,
+                id: -1,
+            });
+        }
+
+
    }
     getAllComunidades (){
         axios.get("http://localhost:8080/api/comunidades")
@@ -52,6 +70,7 @@ export class comunidades extends Component {
                     desc: respose[a].desc,
                     id: respose[a].id,
                     fotos: respose[a].fotos,
+                    nombre: respose[a].nombre,
                     prod: respose[a].prod,
                 })  
         }
@@ -60,21 +79,38 @@ export class comunidades extends Component {
         })
     }).catch(error => console.log(error));
     }
-                /*<div key={i}>
-                    <h1>{comunidad.direccion}</h1>
-                    <p>{comunidad.lat}</p>
-                    <p>{comunidad.longi}</p>
-                    <p>{comunidad.desc}</p>
-                    <p>{comunidad.id}</p>
-                    <p>{comunidad.fotos}</p>
-                    <p>{comunidad.prod}</p>
-                </div>*/
+
+    getAllProductos (){
+        axios.get("http://localhost:8080/api/productos")
+        .then((respose) => respose.data,)
+        .then(respose =>  {
+        console.log("Call");
+        let PedidosCompl = [];
+        
+
+        for(let a =0; a<respose.length; a++){
+            PedidosCompl.push({
+                nombre : respose[a].nombre,
+                precio : respose[a].precio,
+                id : respose[a].id,
+                enlaceCompra : respose[a].enlaceCompra,
+                fotos : respose[a].fotos,
+                desc : respose[a].desc,
+                autor : respose[a].autor,
+                })  
+        }
+        console.log(PedidosCompl)
+        this.setState({productos: PedidosCompl
+        })
+    }).catch(error => console.log(error));
+    }
+
     render() {
 
         const com = this.state.comunidades.map((comunidad, i) => {
             return (
-                <Row key={i}>
-                    <ComunidadCard key={comunidad.id} comunidad={comunidad} setForms={this.setForms} />
+                <Row key={comunidad.id}>
+                    <ComunidadCard key={i} comunidad={comunidad} setForms={this.setForms}  />
                 </Row>
             )
         });
@@ -99,7 +135,10 @@ export class comunidades extends Component {
                 <NewComunidad 
                 key={this.state.id}
                 setForms={this.setForms}
-                comunidad = {this.state.comunidades}  /> </div></Row> : null}
+                comunidad = {this.state.comunidades} 
+                index={this.state.id}
+                productos={this.state.productos}
+                /> </div></Row> : null}
 
                 {com}
               

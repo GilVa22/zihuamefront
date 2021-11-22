@@ -7,25 +7,27 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 
-
-export class newComunidad extends Component {
+export class newProducto extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            direccion : "",
-            lat : 0,
-            longi : 0,
-            desc : "",
+            nombre: "",
+            precio : 0,
             id : 0,
-            fotos : "",
-            nombre : "",
-            prod : [""],
+            enlaceCompra : "",
+            fotos : [""],
+            desc : "",
+            autor : "",
+            comunidad : "",
             //this.nombre: "name",  
-            allProducts: [],
+            allComunidades: [],
         }
     }
     componentDidMount() {
         this.changeState();
+        this.setState({
+            comunidad: this.props.comunidades[0].id
+        });
     }
 
 
@@ -33,18 +35,22 @@ export class newComunidad extends Component {
 
         if(this.props.index<0){
             console.log("NEW");
+            this.setState({
+                allComunidades: this.props.comunidades,
+            });
         }
         else{
             this.setState({
-                direccion : this.props.comunidad[this.props.index].direccion,
-                lat : this.props.comunidad[this.props.index].lat,
-                longi : this.props.comunidad[this.props.index].longi,
-                desc : this.props.comunidad[this.props.index].desc,
-                id : this.props.comunidad[this.props.index].id,
-                fotos : this.props.comunidad[this.props.index].fotos,
-                nombre: this.props.comunidad[this.props.index].nombre,
-                prod : this.props.comunidad[this.props.index].prod,
-                allProducts: this.props.productos,
+                nombre : this.props.producto[this.props.index].nombre,
+                precio : this.props.producto[this.props.index].precio,
+                enlaceCompra : this.props.producto[this.props.index].enlaceCompra,
+                fotos : this.props.producto[this.props.index].fotos,
+                id : this.props.producto[this.props.index].id,
+                desc : this.props.producto[this.props.index].desc,
+                autor: this.props.producto[this.props.index].autor,
+                comunidad : this.props.producto[this.props.index].comunidad,
+
+                allComunidades: this.props.comunidades,
                 //
             });
         }
@@ -60,32 +66,32 @@ export class newComunidad extends Component {
         e.preventDefault();
 
         if(this.state.id===0){
-            const comunidad = {
-                direccion : this.state.direccion,
-                lat : this.state.lat,
-                longi : this.state.longi,
+            const producto = {
+                nombre: this.state.nombre,
+                precio : this.state.precio,
+                enlaceCompra : this.state.enlaceCompra,
+                fotos : this.state.fotos,
                 desc : this.state.desc,
-                fotos : this.state.fotos, 
-                nombre: this.state.nombre, 
+                autor : this.state.autor,
+                comunidad : this.state.comunidad,
                 //
             }
-            axios.post('http://localhost:8080/api/comunidad/' , comunidad)
+            axios.post('http://localhost:8080/api/producto/' , producto)
                 .then(res => alert(res.data));
                 
         }
         else if(this.state.id!==0){
-                const comunidad = {
-                    direccion : this.state.direccion,
-                    lat : this.state.lat,
-                    longi : this.state.longi,
-                    desc : this.state.desc,
+                const producto = {
+                    nombre: this.state.nombre,
+                    precio : this.state.precio,
                     id : this.state.id,
-                    fotos : this.state.fotos, 
-                    nombre: this.state.nombre, 
-                    prod : this.state.prod, //Falta
-                    //
+                    enlaceCompra : this.state.enlaceCompra,
+                    fotos : this.state.fotos,
+                    desc : this.state.desc,
+                    autor : this.state.autor,
+                    comunidad : this.state.comunidad,
                 }
-                axios.put('http://localhost:8080/api/comunidad/'+this.state.id, comunidad)
+                axios.put('http://localhost:8080/api/producto/'+this.state.id, producto)
                     .then(res => alert(res.data));
                     
         }
@@ -113,14 +119,14 @@ export class newComunidad extends Component {
                     <Row>
                         <Col>
                         <Form.Group className="mb-3" controlId="nombre">
-                            <Form.Label>Nombre de la comunidad</Form.Label>
-                            <Form.Control type="text" value={this.state.nombre} name="nombre" placeholder="Comunidad X" onChange={(e) => this.handleChange(e)} />
+                            <Form.Label>Nombre del Producto</Form.Label>
+                            <Form.Control type="text" value={this.state.nombre} name="nombre" placeholder="Producto X" onChange={(e) => this.handleChange(e)} />
                         </Form.Group>
                         </Col>
                         <Col>
-                        <Form.Group className="mb-3" controlId="dir">
-                            <Form.Label>Dirección</Form.Label>
-                            <Form.Control  name="direccion" type="text" placeholder="Calle Colinas #3355 Col. Numeros" value={this.state.direccion} onChange={(e) => this.handleChange(e)}/>
+                        <Form.Group className="mb-3" controlId="precio">
+                            <Form.Label>Precio del Producto</Form.Label>
+                            <Form.Control  name="precio" type="number" placeholder="225" value={this.state.precio} onChange={(e) => this.handleChange(e)}/>
                             <Form.Text className="text-muted">
                             </Form.Text>
                         </Form.Group>
@@ -128,15 +134,15 @@ export class newComunidad extends Component {
                     </Row>
                     <Row>
                     <Col>
-                        <Form.Group className="mb-3" controlId="lat">
-                            <Form.Label>Latitud</Form.Label>
-                            <Form.Control type="number" value={this.state.lat} name="lat" placeholder="26.742917" onChange={(e) => this.handleChange(e)} />
+                        <Form.Group className="mb-3" controlId="enlaceCompra">
+                            <Form.Label>Enlace de Compra</Form.Label>
+                            <Form.Control type="text" value={this.state.enlaceCompra} name="enlaceCompra" placeholder="www.mercadolibre.com.mx/" onChange={(e) => this.handleChange(e)} />
                         </Form.Group>
                         </Col>
                         <Col>
-                        <Form.Group className="mb-3" controlId="long">
-                            <Form.Label>Longitud</Form.Label>
-                            <Form.Control  name="longi" type="number" placeholder="-101.742917" value={this.state.longi} onChange={(e) => this.handleChange(e)}/>
+                        <Form.Group className="mb-3" controlId="Autor">
+                            <Form.Label>Autor</Form.Label>
+                            <Form.Control  name="autor" type="text" placeholder="Nombre completo del autor" value={this.state.autor} onChange={(e) => this.handleChange(e)}/>
                             <Form.Text className="text-muted">
                             </Form.Text>
                         </Form.Group>
@@ -152,9 +158,13 @@ export class newComunidad extends Component {
                         </Form.Group>
                         </Col>
                         <Col>
-                        <Form.Group className="mb-3" controlId="desc">
-                            <Form.Label>Foto de la comunidad</Form.Label>
-                            <Form.Control  name="fotos" type="text" placeholder="Imagen de la comunidad" value={this.state.fotos} onChange={(e) => this.handleChange(e)}/>
+                        <Form.Group className="mb-3" controlId="Comunidad">
+                            <Form.Label>Comunidad</Form.Label>
+                            <Form.Select   name="comunidad" type="text"  value={this.state.allComunidades[0]} onChange={(e) => this.handleChange(e)}>
+                                {this.state.allComunidades.map((comunidad) => {
+                                    return <option key={comunidad.id} value={comunidad.id}>{comunidad.nombre}</option>
+                                })}
+                            </Form.Select>
                             <Form.Text className="text-muted">
                             </Form.Text>
                         </Form.Group>
@@ -174,4 +184,4 @@ export class newComunidad extends Component {
     }
 }
 
-export default newComunidad
+export default newProducto
